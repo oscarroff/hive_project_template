@@ -37,7 +37,6 @@ OBJ			= $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 OBJ_DIRS	= $(sort $(dir $(OBJ)))
 DEPS		= $(OBJ:.o=.d)
 
-
 # TOOLS
 CC			= cc
 CFLAGS		= -Wall -Wextra -Werror
@@ -45,22 +44,14 @@ CGENERAL	= -O2
 CDEBUG		= -g -O0
 MAKE_QUIET	= --no-print-directory
 
-# LIBFT LINKING
-LIBFT_DIR	= ./libft
-LIBFT_H		= $(LIBFT_DIR)/inc/libft.h
-LIBFT_A		= $(LIBFT_DIR)/libft.a
-
 # INCLUDE PATHS AND LIBRARIES
-INC			= -I$(INC_DIR) -I$(LIBFT_DIR)/inc
-LIBFT		= -L$(LIBFT_DIR) -lft
-LIBS		= $(LIBFT)
+INC			= -I$(INC_DIR)
 
 # MESSAGES
 START		= @echo "==== THOMASROFF MAKEFILE =============" \
 			  && echo "==== STARTED: $(shell date '+%Y-%m-%d %H:%M:%S') ===="
 BUILD_PROJ	= @echo "==== BUILDING $(PROJECT) ===============" \
 				&& echo "compiling in $(MODE) mode"
-BUILD_LIBFT	= @echo "==== BUILDING LIBFT =================="
 COMPILED	= @echo "$(PROJECT) compiled successfully"
 FINISH		= @echo "==== BUILD COMPLETE ==================" \
 			  && echo "==== FINISHED: $(shell date '+%Y-%m-%d %H:%M:%S') ==="
@@ -76,16 +67,12 @@ endif
 
 all: $(NAME)
 
-$(NAME): $(OBJ) $(LIBFT_A)
+$(NAME): $(OBJ)
 	$(START)
 	$(BUILD_PROJ)
-	@$(CC) $(CFLAGS) $(INC) $(OBJ) $(LIBS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(INC) $(OBJ) -o $(NAME)
 	$(COMPILED)
 	$(FINISH)
-
-$(LIBFT_A):
-	@$(MAKE_LIB) $(LIBFT_DIR) $(MAKE_QUIET)
-	$(SPACER)
 
 $(OBJ_DIRS):
 	@mkdir -p $@
@@ -108,14 +95,12 @@ release:
 clean:
 	@echo "Removing object files"
 	@rm -rf obj
-	@make -C libft clean $(MAKE_QUIET)
 
 fclean:
 	@echo "Removing object files"
 	@rm -rf obj
 	@echo "Removing static library files"
 	@rm -f $(NAME)
-	@make -C libft fclean $(MAKE_QUIET)
 
 re: fclean all
 
